@@ -13,7 +13,7 @@ class Connection:
 		# :param user: The username which is used to access the database, usually root
 		# :param password: The password which is used to access the database, usually empty
 		"""
-		self.engine = create_engine(f'mysql+pymysql://root@127.0.0.1:3306/{db}')
+		self.engine = create_engine(f'mysql://root@127.0.0.1:3306/{db}')
 		self.conn = self.connect()
 
 	def connect(self):

@@ -10,7 +10,7 @@ class ETLCandlestickBatch:
 
 	def __init__(self):
 		# start time is 3 years ago, 01-01-2018
-		self.base_url = f"https://api.binance.com/api/v3/klines?symbol=DOGEEUR&interval=1h&startTime=1514830707000"
+		self.base_url = f"https://api.binance.com/api/v3/klines?symbol=DOGEEUR&interval=1h"
 		self.dataset = self.extract()
 		self.dataset = self.transform()
 		self.load()
@@ -38,15 +38,21 @@ class ETLCandlestickBatch:
 			'taker_buy_base_asset_volume',
 			'taker_buy_quote_asset_volume',
 			'ignore', 'volume'
-		])
+		]).values.tolist()
 
 	def load(self):
 		"""
 		Loads the data into the database using the database services
 		"""
-		path = f"{Config.BASE_PATH}/database/dataset"
-		self.dataset.to_csv(f'{path}/batch_candles.csv', index=False)
-		staging.add_batch()
+		for candle in self.dataset:
+			staging.add({
+				'open': candle[1],
+				'high': candle[2],
+				'low': candle[3],
+				'close': candle[4],
+				'open_timestamp': candle[0],
+				'close_timestamp': candle[5]
+			})
 
 
 t = ETLCandlestickBatch()

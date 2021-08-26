@@ -2,7 +2,7 @@ from . import Connection
 
 
 def add(dataset):
-	with Connection('staging').connect() as conn:
+	with Connection('staging').get_connection() as conn:
 		conn.execute(
 			f"INSERT INTO currency "
 			f"VALUES ("
