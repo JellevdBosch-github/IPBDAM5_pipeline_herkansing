@@ -1,4 +1,5 @@
 from . import Connection
+from pipeline_components.staging_master.task import candlestick
 
 
 def add(dataset):
@@ -18,3 +19,7 @@ def add(dataset):
 			f"open_timestamp = {dataset['open_timestamp']}, "
 			f"close_timestamp = {dataset['close_timestamp']} "
 		)
+
+
+def add_batch():
+	pass
