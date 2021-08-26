@@ -3,6 +3,7 @@ import requests
 from pprint import pprint
 import pandas as pd
 from database.service.candlestick import staging
+from config import Config
 
 
 class ETLCandlestickBatch:
@@ -43,9 +44,9 @@ class ETLCandlestickBatch:
 		"""
 		Loads the data into the database using the database services
 		"""
-		# self.dataset.to_csv(f'batch_candles.csv', index=False)
-		# staging.add_batch()
-		pass
+		path = f"{Config.BASE_PATH}/database/dataset"
+		self.dataset.to_csv(f'{path}/batch_candles.csv', index=False)
+		staging.add_batch()
 
 
 t = ETLCandlestickBatch()
