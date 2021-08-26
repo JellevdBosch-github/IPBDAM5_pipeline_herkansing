@@ -2,7 +2,7 @@ import utils
 import requests
 from pprint import pprint
 import pandas as pd
-import database.service.candlestick
+from database.service.candlestick import staging
 
 
 class ETLCandlestickBatch:
@@ -37,13 +37,14 @@ class ETLCandlestickBatch:
 			'taker_buy_base_asset_volume',
 			'taker_buy_quote_asset_volume',
 			'ignore', 'volume'
-		]).values.tolist()
+		])
 
 	def load(self):
 		"""
 		Loads the data into the database using the database services
-		Checks if open time already exists, if so then pass
 		"""
+		# self.dataset.to_csv(f'batch_candles.csv', index=False)
+		# staging.add_batch()
 		pass
 
 
