@@ -47,7 +47,6 @@ class ETLCandlestickBatch:
 		path = f"{Config.BASE_PATH}/database/dataset"
 		self.dataset.to_csv(f'{path}/batch_candles.csv', index=False)
 		staging.add_batch()
-		pass
 
 
 t = ETLCandlestickBatch()
