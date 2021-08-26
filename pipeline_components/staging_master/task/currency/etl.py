@@ -1,7 +1,7 @@
 import utils
 import requests
 import pandas as pd
-import database.service.candlestick
+from database.service.currency import staging
 
 
 class ETLCurrency:
@@ -35,16 +35,29 @@ class ETLCurrency:
 			'lastId', 'count'
 		])
 		# rounds percentChange column to 2 decimals
-		df = df.values.tolist()[0]
-		df[2] = round(float(df[2]), 2)
-		return df
+		dataset = df.values.tolist()[0]
+		dataset[2] = round(float(dataset[2]), 2)
+		return dataset
 
 	def load(self):
 		"""
 		Loads the data into the database using the database services
 		Updates existing data
 		"""
-		print(self.dataset)
+		dataset = {
+			'id': self.dataset[0],
+			'price_change': self.dataset[1],
+			'price_change_percentage': self.dataset[2],
+			'prev_close_price': self.dataset[3],
+			'last_price': self.dataset[4],
+			'open_price': self.dataset[5],
+			'high_price': self.dataset[6],
+			'volume': self.dataset[7],
+			'open_time': self.dataset[8],
+			'close_time': self.dataset[9],
+		}
+		print(dataset)
+		staging.add(dataset)
 
 
 t = ETLCurrency()
