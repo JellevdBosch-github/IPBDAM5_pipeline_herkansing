@@ -1,7 +1,7 @@
 import utils
 import requests
 import pandas as pd
-import database.service.candlestick
+from database.service.candlestick import staging
 
 
 class ETLCandlestickStream:
@@ -54,7 +54,15 @@ class ETLCandlestickStream:
 		Loads the data into the database using the database services
 		Replaces any candlestick with the same open timestamp
 		"""
-		pass
+		dataset = {
+			'open': self.dataset[1],
+			'high': self.dataset[2],
+			'low': self.dataset[3],
+			'close': self.dataset[4],
+			'open_timestamp': self.dataset[0],
+			'close_timestamp': self.dataset[5],
+		}
+		staging.add(dataset)
 
 
 t = ETLCandlestickStream()
