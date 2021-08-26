@@ -4,7 +4,7 @@ from sqlalchemy import create_engine
 
 class Connection:
 
-	def __init__(self):
+	def __init__(self, db):
 		"""
 		Initializes the database connection using the SQLAlchemy Engine
 		# :param host: The host where the database is hosted, usually 127.0.0.1 (localhost)
@@ -13,7 +13,7 @@ class Connection:
 		# :param user: The username which is used to access the database, usually root
 		# :param password: The password which is used to access the database, usually empty
 		"""
-		self.engine = create_engine('mysql+pymysql://root@127.0.0.1:3306/test')
+		self.engine = create_engine(f'mysql+pymysql://root@127.0.0.1:3306/{db}')
 		self.conn = self.connect()
 
 	def connect(self):
