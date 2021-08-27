@@ -70,7 +70,6 @@ class PatternRecognition:
 
 	def __init__(self, candles):
 		self.candles = candles
-		self.current_candle = self.scan_pattern()
 
 	def scan_pattern(self):
 		cur = self.candles[2]
@@ -84,10 +83,8 @@ class PatternRecognition:
 			prev = self.candles[i-1]
 			prev2 = self.candles[i-2]
 			self.candles[i] = patterns(cur, prev, prev2)
-
-	def get_candle(self):
-		# returns the candle
-		return self.current_candle
-
-	def get_candles(self):
+		self.candles[0]['pattern'] = ''
+		self.candles[0]['signal'] = ''
+		self.candles[1]['pattern'] = ''
+		self.candles[1]['signal'] = ''
 		return self.candles

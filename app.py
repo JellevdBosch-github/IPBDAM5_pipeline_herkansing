@@ -1,8 +1,10 @@
-from pipeline_components.staging_master import runner as staging
+from pipeline_components.staging_master import runner as stream
+from pipeline_components.staging_master import run_batch as batch
 
 
 def run():
-	staging.run_hourly()
+	# batch.run()
+	stream.run_hourly()
 
 
 run()

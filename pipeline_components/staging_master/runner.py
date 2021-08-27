@@ -13,14 +13,13 @@ def run_hourly():
 	ETLCandlestickStream()
 	# Get the lastest 3 candles for pattern recognition
 	candles = cs.read_last_3()
-	print(candles)
-	# Recognize patterns
-	candle = PatternRecognition(candles).get_candle()
-	if candle['pattern']:
-		cs.edit(candle['candlestick_id'], candle['pattern'], candle['signal'])
-		trade_id = CreateTrade(candle['pattern'], candle['signal'], '', candle['candlestick_id']).get_id()
-		print(trade_id)
-		# TODO hour later: secondary trade
+	if len(candles) >= 3:
+		# Recognize patterns
+		candle = PatternRecognition(candles).scan_pattern()
+		if candle['pattern']:
+			cs.edit(candle['candlestick_id'], candle['pattern'], candle['signal'])
+			trade_id = CreateTrade(candle['pattern'], candle['signal'], '', candle['candlestick_id'], '', '').get_id()
+			CreateTrade(candle['pattern'], candle['signal'], trade_id, candle['candlestick_id'], '', '')
 
 
 def run_daily():

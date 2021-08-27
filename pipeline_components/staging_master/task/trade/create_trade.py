@@ -7,15 +7,18 @@ from database.service.wallet import staging as wallet_service
 
 class CreateTrade:
 
-	def __init__(self, pattern, signal, original_id, candlestick_id):
+	def __init__(self, pattern, signal, original_id, candlestick_id, doge_value_batch, close_next):
 		self.pattern = pattern
 		self.signal = signal
 		self.original_id = original_id
 		self.candlestick_id = candlestick_id
+		self.doge_value_batch = doge_value_batch
+		self.close_next = close_next
 		self.id = uuid4()
-		self.wallet_id = '99922c40-700b-49f3-ad16-2dd201750ddb'
+		self.wallet_id = 'b872bab0-88c4-4bbb-8140-daf7180b4d44'
 		self.currency_id = 'DOGEEUR'
 		self.timestamp = utils.get_current_epoch_ms()
+		self.trade()
 
 	def get_id(self):
 		return self.id
@@ -24,7 +27,10 @@ class CreateTrade:
 		# If it's a secondary trade
 		if self.original_id:
 			doge_value = trade_service.read(self.original_id)
-			eur_value = utils.convert_currency('DOGE', 'EUR', doge_value)
+			if self.doge_value_batch:
+				eur_value = self.doge_value_batch * self.close_next
+			else:
+				eur_value = utils.convert_currency('DOGE', 'EUR', doge_value)
 		# If it's a primary trade
 		else:
 			eur_value = 100.00
@@ -46,8 +52,10 @@ class CreateTrade:
 			'eur_value': eur_value,
 			'doge_value': doge_value,
 		}
-
-		wallet_service.edit(wallet, 'buy') if self.signal == 'bull' else wallet_service.edit(wallet, 'sell')
+		if self.original_id:
+			wallet_service.edit(wallet, 'buy') if self.signal == 'bear' else wallet_service.edit(wallet, 'sell')
+		else:
+			wallet_service.edit(wallet, 'buy') if self.signal == 'bull' else wallet_service.edit(wallet, 'sell')
 
 		# If this is a secondary trade
 		if self.original_id:

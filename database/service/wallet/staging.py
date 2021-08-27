@@ -25,4 +25,4 @@ def read(wallet_id):
 		eur_value = 0.00
 		for r in result:
 			eur_value = r
-		return eur_value
+		return eur_value[0]
