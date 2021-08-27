@@ -1,11 +1,13 @@
 from .task.candlestick.etl_stream import ETLCandlestickStream
+from .task.currency.etl import ETLCurrency
 from .task.trade.pattern_recognition import PatternRecognition
 from .task.trade.create_trade import CreateTrade
 from database.service.candlestick import staging as cs
 
 
 def run_staging():
-	pass
+	run_hourly()
+	run_daily()
 
 
 def run_hourly():
@@ -23,4 +25,4 @@ def run_hourly():
 
 
 def run_daily():
-	pass
+	ETLCurrency()

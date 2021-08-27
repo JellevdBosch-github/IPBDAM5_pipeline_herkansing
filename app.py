@@ -4,7 +4,7 @@ from pipeline_components.staging_master import run_batch as batch
 
 def run():
 	# batch.run()
-	stream.run_hourly()
+	stream.run_staging()
 
 
 run()
