@@ -11,7 +11,10 @@ class ETLCandlestickStream:
 		self.url = self.url()
 		self.dataset = self.extract()
 		self.dataset = self.transform()
-		self.load()
+		self.candle = self.load()
+
+	def get_candle(self):
+		return self.candle
 
 	def url(self):
 		"""
@@ -63,6 +66,4 @@ class ETLCandlestickStream:
 			'close_timestamp': self.dataset[5],
 		}
 		staging.add(dataset)
-
-
-t = ETLCandlestickStream()
+		return dataset

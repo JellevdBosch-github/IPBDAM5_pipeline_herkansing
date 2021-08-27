@@ -57,6 +57,3 @@ class ETLCurrency:
 			'close_time': self.dataset[9],
 		}
 		staging.add(dataset)
-
-
-t = ETLCurrency()

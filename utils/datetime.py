@@ -69,6 +69,18 @@ def last_hour_epoch(ts):
 		return ts - 3600000
 
 
+def twentynine_hours_ago_epoch(ts):
+	"""
+	Get the timestamp an hour before the given parameter
+	:param ts: Integer: The timestamp to get the previous hour from.
+	:return: Integer: The timestamp an hour before the given parameter
+	"""
+	if utils.get_integer_places(ts) == 10:
+		return ts - 104400
+	elif utils.get_integer_places(ts) == 13:
+		return ts - 104400000
+
+
 def get_current_date_time(f):
 	"""
 	Get the current datetime in a preferred format

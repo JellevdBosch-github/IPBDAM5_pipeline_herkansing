@@ -6,14 +6,31 @@ from database.service.candlestick import staging
 from config import Config
 
 
+def load(dataset):
+	"""
+	Loads the data into the database using the database services
+	"""
+	for candle in dataset:
+		staging.add_batch({
+			'open': candle['open'],
+			'high': candle['high'],
+			'low': candle['low'],
+			'close': candle['close'],
+			'open_timestamp': candle['open_timestamp'],
+			'close_timestamp': candle['close_timestamp'],
+			'pattern': candle['pattern'],
+			'candlestick_signal': candle['signal']
+		})
+
+
 class ETLCandlestickBatch:
 
 	def __init__(self):
 		# start time is 3 years ago, 01-01-2018
-		self.base_url = f"https://api.binance.com/api/v3/klines?symbol=DOGEEUR&interval=1h"
+		self.base_url = f"https://api.binance.com/api/v3/klines?symbol=DOGEEUR&interval=1h" \
+						f"&startTime={utils.twentynine_hours_ago_epoch(utils.get_current_epoch_ms())}"
 		self.dataset = self.extract()
 		self.dataset = self.transform()
-		self.load()
 
 	def extract(self):
 		"""
@@ -32,27 +49,24 @@ class ETLCandlestickBatch:
 		Removes unneeded columns
 		:return: cleaned dataset as a Python List
 		"""
-		return utils.drop_columns(self.dataset, [
+		datalist = utils.drop_columns(self.dataset, [
 			'quote_asset_volume',
 			'number_of_trades',
 			'taker_buy_base_asset_volume',
 			'taker_buy_quote_asset_volume',
 			'ignore', 'volume'
 		]).values.tolist()
-
-	def load(self):
-		"""
-		Loads the data into the database using the database services
-		"""
-		for candle in self.dataset:
-			staging.add({
-				'open': candle[1],
-				'high': candle[2],
-				'low': candle[3],
-				'close': candle[4],
+		candles = []
+		for candle in datalist:
+			candles.append({
+				'open': float(candle[1]),
+				'high': float(candle[2]),
+				'low': float(candle[3]),
+				'close': float(candle[4]),
 				'open_timestamp': candle[0],
-				'close_timestamp': candle[5]
+				'close_timestamp': candle[5],
 			})
+		return candles
 
-
-t = ETLCandlestickBatch()
+	def get_candles(self):
+		return self.dataset
