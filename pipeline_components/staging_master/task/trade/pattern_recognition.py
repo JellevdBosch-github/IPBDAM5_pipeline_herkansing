@@ -12,58 +12,57 @@ def patterns(cur, prev, prev2):
 	signal = None
 
 	# open - close
-	real_body = abs(cur[1] - cur[4])
+	real_body = abs(cur['open'] - cur['low'])
 	# high - low
-	candle_range = cur[2] - cur[3]
-
+	candle_range = cur['high'] - cur['low']
 
 	# Bullish Swing
 	# if current low > previous low and previous low < previous2 low
-	if cur[3] > prev[3] and prev[3] < prev2[3]:
+	if cur['low'] > prev['low'] and prev['low'] < prev2['low']:
 		pattern = 'bullish swing'
 		signal = 'bull'
-		cur.append(pattern)
-		cur.append(signal)
+		cur['pattern'] = pattern
+		cur['signal'] = signal
 	# Bearish Swing
 	# if current high < previous high and previous high > previous2 high
-	elif cur[2] < prev[2] and prev[2] > prev2[2]:
+	elif cur['high'] < prev['high'] and prev['high'] > prev2['high']:
 		pattern = 'bearish swing'
 		signal = 'bear'
-		cur.append(pattern)
-		cur.append(signal)
+		cur['pattern'] = pattern
+		cur['signal'] = signal
 	# Bullish Pinbar
 	# if body <= (range / 3) and min(open, close) > (high + low) / 2 and current low < previous low
 	# if the real body is smaller than a third of the range and the body is located in the upper half
-	elif real_body <= (candle_range / 3) and min(cur[1], cur[4]) > ((cur[2] + cur[3]) / 2) and cur[3] < prev[3]:
+	elif real_body <= (candle_range / 3) and min(cur['open'], cur['close']) > ((cur['high'] + cur['low']) / 2) and cur['low'] < prev['low']:
 		pattern = 'bullish pinbar'
 		signal = 'bull'
-		cur.append(pattern)
-		cur.append(signal)
+		cur['pattern'] = pattern
+		cur['signal'] = signal
 	# Bearish Pinbar
 	# if body <= (range / 3) and max(open, close) < (high + low) / 2 and current high > previous high
 	# if the real body is smaller than a third of the range and the body is located in the lower half
-	elif real_body <= (candle_range / 3) and max(cur[1], cur[4]) < ((cur[2] + cur[3]) / 2) and cur[2] > prev[2]:
+	elif real_body <= (candle_range / 3) and max(cur['open'], cur['close']) < ((cur['high'] + cur['low']) / 2) and cur['high'] > prev['high']:
 		pattern = 'bearish pinbar'
 		signal = 'bear'
-		cur.append(pattern)
-		cur.append(signal)
+		cur['pattern'] = pattern
+		cur['signal'] = signal
 	# Bullish Engulfing
 	# if current high > previous high and current low < previous low and real body >= 80% of range and current close > current open
-	elif cur[2] > prev[2] and cur[3] < prev[3] and real_body >= 0.8 * candle_range and cur[4] > cur[1]:
+	elif cur['high'] > prev['high'] and cur['low'] < prev['low'] and real_body >= 0.8 * candle_range and cur['close'] > cur['open']:
 		pattern = 'bullish engulfing'
 		signal = 'bull'
-		cur.append(pattern)
-		cur.append(signal)
+		cur['pattern'] = pattern
+		cur['signal'] = signal
 	# Bearish Engulfing
 	# if current high > previous high and current low < previous low and real body >= 80% of range and current close < current open
-	elif cur[2] > prev[2] and cur[3] < prev[3] and real_body >= 0.8 * candle_range and cur[4] < cur[1]:
+	elif cur['high'] > prev['high'] and cur['low'] < prev['low'] and real_body >= 0.8 * candle_range and cur['close'] < cur['open']:
 		pattern = 'bearish engulfing'
 		signal = 'bear'
-		cur.append(pattern)
-		cur.append(signal)
+		cur['pattern'] = pattern
+		cur['signal'] = signal
 	else:
-		cur.append('')
-		cur.append('')
+		cur['pattern'] = ''
+		cur['signal'] = ''
 	return cur
 
 
@@ -71,11 +70,12 @@ class PatternRecognition:
 
 	def __init__(self, candles):
 		self.candles = candles
+		self.current_candle = self.scan_pattern()
 
 	def scan_pattern(self):
-		cur = self.candles[0]
+		cur = self.candles[2]
 		prev = self.candles[1]
-		prev2 = self.candles[2]
+		prev2 = self.candles[0]
 		return patterns(cur, prev, prev2)
 
 	def scan_patterns_historical(self):
@@ -84,6 +84,10 @@ class PatternRecognition:
 			prev = self.candles[i-1]
 			prev2 = self.candles[i-2]
 			self.candles[i] = patterns(cur, prev, prev2)
+
+	def get_candle(self):
+		# returns the candle
+		return self.current_candle
 
 	def get_candles(self):
 		return self.candles
