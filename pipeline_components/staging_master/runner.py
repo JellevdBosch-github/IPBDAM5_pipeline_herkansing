@@ -9,8 +9,8 @@ import datetime
 
 
 def run_staging():
-	schedule.every().hour.at(':59').do(run_hourly())
-	schedule.every().day.at('09:00').do(run_daily())
+	schedule.every().hour.at(':59').do(run_hourly)
+	schedule.every().day.at('09:00').do(run_daily)
 	while True:
 		schedule.run_pending()
 		time.sleep(20)
